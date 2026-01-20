@@ -1,0 +1,49 @@
+import { query } from "./_generated/server";
+import { v } from "convex/values"; 
+
+export const currentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    try {
+      const identity = await ctx.auth.getUserIdentity(); // Use native Convex auth context
+      
+      if (identity === null) {
+        return null; // No authenticated user
+      }
+      
+      // Query the users table using the tokenIdentifier from the identity
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_token", (q) =>
+          q.eq("tokenIdentifier", identity.tokenIdentifier)
+        )
+        .unique(); // Find the unique user record
+        
+      return user;
+    } catch (error) {
+      console.error("Error in users:currentUser with ctx.auth:", error);
+      // Return null instead of throwing to prevent client crash
+      // This handles cases where auth check fails unexpectedly
+      return null;
+    }
+  },
+});
+
+export const getCurrentUser = async (ctx: { db: any; auth: any }) => {
+  try {
+    const identity = await ctx.auth.getUserIdentity(); // Use native Convex auth context
+    if (identity === null) {
+      return null;
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+    return user;
+  } catch (error) {
+    console.error("Error in getCurrentUser with ctx.auth:", error);
+    return null;
+  }
+};
