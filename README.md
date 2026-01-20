@@ -66,6 +66,6 @@ Other Relevant Information
 •
 Structure: Global client-side error handling via `src/instrumentation.tsx` and `src/components/ErrorBoundary.tsx`.
 •
-Integrations: Convex, Framer Motion, Shadcn UI. OpenRouter is directly used for AI via `src/convex/ai.ts`, bypassing `@vly-ai/integrations` for AI calls.
+Integrations: Convex, Framer Motion, Shadcn UI. OpenRouter is directly used for AI via `src/convex/ai.ts` for AI calls.
 •
 Conventions: Mobile responsive, Sonner notifications.
